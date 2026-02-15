@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Tender Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Fixed header (simpler, no news bar on admin) -->
+  <header class="fixed-header">
+    <div class="logo-bar">
+      <div class="logo">🏛️</div>
+      <span class="site-title">Tender Result Portal · Admin</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Login Box (visible initially) -->
+    <div id="loginBox" class="login-box">
+      <h3>Admin Login</h3>
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" value="admin">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" value="admin123">
+      </div>
+      <button class="btn" id="loginBtn" style="width:100%;">Sign In</button>
+      <div id="loginError" class="error-msg" style="display: none;">Invalid credentials (use admin/admin123)</div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <div id="adminDashboard" class="admin-dashboard">
+      <div class="card">
+        <h2>📋 Manage Tenders</h2>
+        <div class="admin-grid">
+          <!-- Left: List of existing tenders with edit/delete -->
+          <div class="tender-list-admin">
+            <h3 style="margin-bottom:1rem;">Existing Tenders</h3>
+            <div id="tenderListContainer"></div>
+          </div>
+
+          <!-- Right: Add/Edit Form -->
+          <div class="card" style="margin:0; padding:1.5rem;">
+            <h3 id="formTitle">➕ Add New Tender</h3>
+            <form id="tenderForm" onsubmit="return false;">
+              <input type="hidden" id="editId" value="">
+              <div class="input-group"><label>Tender Number *</label><input type="text" id="tenderNo" required></div>
+              <div class="input-group"><label>Work Name *</label><input type="text" id="workName" required></div>
+              <div class="input-group"><label>Department *</label><input type="text" id="department" required></div>
+              <div class="input-group"><label>Estimated Cost (₹) *</label><input type="number" id="cost" step="1000" required></div>
+              <div class="input-group"><label>Bid Opening Date *</label><input type="date" id="bidDate" required></div>
+              <div class="input-group"><label>Result Status</label>
+                <select id="status">
+                  <option>Selected</option>
+                  <option>Cancelled</option>
+                  <option>Under Evaluation</option>
+                </select>
+              </div>
+              <div class="input-group"><label>Selected Bidder Name</label><input type="text" id="bidder"></div>
+              <div class="input-group"><label>Quoted Amount (₹)</label><input type="number" id="quoted" step="1000"></div>
+              <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <button class="btn" id="saveBtn">💾 Save Tender</button>
+                <button class="btn btn-secondary" id="clearBtn">🗑️ Clear</button>
+              </div>
+              <div id="formSuccess" class="success-msg" style="display:none; margin-top:1rem;">Tender saved successfully</div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    // ========== ADMIN PAGE SCRIPT ==========
+    import { loadTenders, saveTenders, getStatusClass } from './js/app.js';
+
+    // DOM elements
+    const loginBox = document.getElementById('loginBox');
+    const adminDashboard = document.getElementById('adminDashboard');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const tenderListContainer = document.getElementById('tenderListContainer');
+    const form = document.getElementById('tenderForm');
+    const editId = document.getElementById('editId');
+    const tenderNo = document.getElementById('tenderNo');
+    const workName = document.getElementById('workName');
+    const department = document.getElementById('department');
+    const cost = document.getElementById('cost');
+    const bidDate = document.getElementById('bidDate');
+    const status = document.getElementById('status');
+    const bidder = document.getElementById('bidder');
+    const quoted = document.getElementById('quoted');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const formSuccess = document.getElementById('formSuccess');
+    const formTitle = document.getElementById('formTitle');
+
+    let tenders = loadTenders();
+
+    // ---------- LOGIN ----------
+    loginBtn.addEventListener('click', () => {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (user === 'admin' && pass === 'admin123') {
+        loginBox.style.display = 'none';
+        adminDashboard.style.display = 'block';
+        renderTenderList();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    // ---------- RENDER LIST OF TENDERS (with edit/delete buttons) ----------
+    function renderTenderList() {
+      let html = '';
+      tenders.forEach(t => {
+        html += `<div class="tender-item">
+          <div>
+            <strong>${t.tenderNo}</strong> – ${t.workName}<br>
+            <small>${t.department} | ${t.date}</small>
+          </div>
+          <div style="display:flex; gap:0.3rem;">
+            <button class="btn-icon edit-btn" data-id="${t.id}">✏️ Edit</button>
+            <button class="btn-icon delete-btn" data-id="${t.id}" style="color:#b22234;">🗑️ Del</button>
+          </div>
+        </div>`;
+      });
+      if (tenders.length === 0) html = '<p>No tenders yet. Add one using the form.</p>';
+      tenderListContainer.innerHTML = html;
+    }
+
+    // ---------- POPULATE FORM FOR EDIT ----------
+    function populateForm(tender) {
+      editId.value = tender.id;
+      tenderNo.value = tender.tenderNo;
+      workName.value = tender.workName;
+      department.value = tender.department;
+      cost.value = tender.cost;
+      bidDate.value = tender.date;
+      status.value = tender.status;
+      bidder.value = tender.bidder || '';
+      quoted.value = tender.amount || 0;
+      formTitle.textContent = '✏️ Edit Tender';
+    }
+
+    // ---------- CLEAR FORM (ADD MODE) ----------
+    function clearForm() {
+      editId.value = '';
+      tenderNo.value = '';
+      workName.value = '';
+      department.value = '';
+      cost.value = '';
+      bidDate.value = new Date().toISOString().split('T')[0];
+      status.value = 'Selected';
+      bidder.value = '';
+      quoted.value = '';
+      formTitle.textContent = '➕ Add New Tender';
+    }
+
+    // ---------- SAVE (ADD or UPDATE) ----------
+    function saveTender() {
+      // Basic validation
+      if (!tenderNo.value || !workName.value || !department.value || !cost.value || !bidDate.value) {
+        alert('Please fill all required fields.');
+        return;
+      }
+
+      const tenderData = {
+        id: editId.value || Date.now().toString() + Math.random().toString(36).substr(2, 5),
+        tenderNo: tenderNo.value,
+        workName: workName.value,
+        department: department.value,
+        cost: parseFloat(cost.value),
+        date: bidDate.value,
+        status: status.value,
+        bidder: bidder.value || '—',
+        amount: parseFloat(quoted.value) || 0
+      };
+
+      if (editId.value) {
+        // Update existing
+        const index = tenders.findIndex(t => t.id === editId.value);
+        if (index !== -1) tenders[index] = tenderData;
+      } else {
+        // Add new
+        tenders.push(tenderData);
+      }
+
+      saveTenders(tenders);
+      renderTenderList();
+      clearForm();
+      formSuccess.style.display = 'block';
+      setTimeout(() => { formSuccess.style.display = 'none'; }, 2000);
+    }
+
+    // ---------- DELETE TENDER ----------
+    function deleteTender(id) {
+      if (confirm('Delete this tender?')) {
+        tenders = tenders.filter(t => t.id !== id);
+        saveTenders(tenders);
+        renderTenderList();
+        if (editId.value === id) clearForm(); // if currently editing, reset
+      }
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    tenderListContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      if (!id) return;
+
+      if (btn.classList.contains('edit-btn')) {
+        const tender = tenders.find(t => t.id === id);
+        if (tender) populateForm(tender);
+      } else if (btn.classList.contains('delete-btn')) {
+        deleteTender(id);
+      }
+    });
+
+    saveBtn.addEventListener('click', saveTender);
+    clearBtn.addEventListener('click', clearForm);
+
+    // Set default date on load
+    clearForm();
+
+    // If already logged in? (no persistence, but we can check if dashboard should show? we start hidden)
+  </script>
+</body>
+</html>
