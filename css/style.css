@@ -14,43 +14,37 @@ body {
 }
 
 /* ===== FIXED HEADER ===== */
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 30, 60, 0.08);
-  z-index: 1000;
+body {
+  padding-top: 160px; /* logo-bar (70px) + two news bars (45px each) */
 }
 
-.logo-bar {
-  display: flex;
-  align-items: center;
-  padding: 0.9rem 2rem;
-  background: white;
-  border-bottom: 1px solid #dbe4ed;
-}
+/* ... existing logo-bar styles ... */
 
-.logo {
-  background-color: #002868; /* dark blue */
+/* news bar base (dark blue) */
+.news-bar {
+  background-color: #002868;
   color: white;
-  font-size: 1.8rem;
-  font-weight: 700;
-  width: 48px;
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  border-radius: 10px;
-  margin-right: 1rem;
+  padding: 0.7rem 0;
+  overflow: hidden;
+  border-bottom: 2px solid #ffd966;
 }
 
-.site-title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #002868;
-  letter-spacing: -0.02em;
+/* red news bar variant */
+.news-bar.red-news {
+  background-color: #b22234; /* government red */
+  border-bottom: 2px solid #ffcc00;
 }
+
+.scrolling-wrapper {
+  display: flex;
+  width: fit-content;
+  animation: scrollNews 35s linear infinite;
+}
+
+.news-bar:hover .scrolling-wrapper {
+  animation-play-state: paused;
+}
+/* ... rest remains ... */
 
 /* ===== SCROLLING NEWS BAR (MANDATORY) ===== */
 .news-bar {
