@@ -10,11 +10,24 @@
 <body>
   <!-- Fixed header (simpler, no news bar on admin) -->
   <header class="fixed-header">
-    <div class="logo-bar">
-      <div class="logo">🏛️</div>
-      <span class="site-title">Tender Result Portal · Admin</span>
+  <div class="logo-bar">
+    <div class="logo">🏛️</div>
+    <span class="site-title">Tender Result Portal · Admin</span>
+  </div>
+  <!-- Add the same two news bars for admin (optional but consistent) -->
+  <div class="news-bar">
+    <div class="scrolling-wrapper">
+      <span class="news-text">📢 Admin Panel: Tender data is stored locally | Changes reflect immediately</span>
+      <span class="news-text">📢 Admin Panel: Tender data is stored locally | Changes reflect immediately</span>
     </div>
-  </header>
+  </div>
+  <div class="news-bar red-news">
+    <div class="scrolling-wrapper">
+      <span class="news-text">⚠️ Use credentials admin/admin123 to login | All data saved in browser</span>
+      <span class="news-text">⚠️ Use credentials admin/admin123 to login | All data saved in browser</span>
+    </div>
+  </div>
+</header>
 
   <main class="container">
     <!-- Login Box (visible initially) -->
