@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Tender Result Portal | Government UI</title>
+  <!-- Google Fonts (optional, clean professional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== GLOBAL STYLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7fb;
+      color: #1e2a41;
+      line-height: 1.5;
+      padding-top: 130px; /* fixed header (logo row 70px + news bar 45px) */
+    }
+
+    /* ===== FIXED HEADER (two rows) ===== */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 20, 40, 0.08);
+      z-index: 1000;
+    }
+
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 2rem;
+      background: white;
+      border-bottom: 1px solid #e6edf4;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background-color: #0b2b4f;
+      color: white;
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+      text-align: center;
+      line-height: 48px;
+      border-radius: 8px;
+      margin-right: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .site-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0b2b4f;
+      letter-spacing: -0.02em;
+    }
+
+    /* ===== SIDE-SCROLLING NOTICE BAR (MANDATORY) ===== */
+    .news-bar {
+      background-color: #002868; /* dark blue */
+      color: white;
+      padding: 0.7rem 0;
+      overflow: hidden;
+      border-bottom: 2px solid #ffd966;
+      width: 100%;
+    }
+
+    .scrolling-wrapper {
+      display: flex;
+      white-space: nowrap;
+      animation: scrollNews 30s linear infinite;
+      width: fit-content;
+    }
+
+    .news-bar:hover .scrolling-wrapper {
+      animation-play-state: paused;
+    }
+
+    .news-text {
+      font-size: 1rem;
+      font-weight: 500;
+      padding-right: 3rem;
+      letter-spacing: 0.3px;
+    }
+
+    @keyframes scrollNews {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+    }
+
+    /* ===== CARD UI (login, admin, table) ===== */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 24px rgba(0, 30, 60, 0.05);
+      margin-bottom: 2.5rem;
+      border: 1px solid #e9eef3;
+    }
+
+    .card h2, .card h3 {
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: #0b2b4f;
+      border-left: 6px solid #002868;
+      padding-left: 1rem;
+    }
+
+    /* ===== ADMIN LOGIN BOX ===== */
+    .login-box {
+      max-width: 440px;
+      margin: 2rem auto 1rem auto;
+      background: white;
+      border-radius: 28px;
+      padding: 2rem 2rem 2.2rem;
+      box-shadow: 0 15px 35px rgba(0,40,80,0.1);
+      border: 1px solid #d9e2ef;
+    }
+
+    .login-box h3 {
+      color: #002868;
+      margin-bottom: 1.8rem;
+      font-weight: 600;
+      font-size: 1.7rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.4rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #2a405c;
+      margin-bottom: 0.3rem;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 2px solid #dde5ed;
+      border-radius: 14px;
+      font-size: 1rem;
+      transition: 0.15s;
+      background-color: #f9fcff;
+    }
+
+    .input-group input:focus {
+      border-color: #002868;
+      outline: none;
+      background-color: white;
+    }
+
+    .btn {
+      background-color: #002868;
+      color: white;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 8px rgba(0,40,80,0.2);
+      border: 1px solid #001b4b;
+    }
+
+    .btn:hover {
+      background-color: #103c78;
+    }
+
+    .btn-secondary {
+      background-color: #e0e8f0;
+      color: #1e2f47;
+      box-shadow: none;
+      border: 1px solid #b6c6d9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #d0ddec;
+    }
+
+    .error-msg {
+      color: #b22234;
+      background: #ffe6e8;
+      padding: 0.8rem;
+      border-radius: 12px;
+      font-weight: 500;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .success-msg {
+      background: #e2f0e8;
+      color: #0d5e3c;
+      padding: 0.8rem;
+      border-radius: 40px;
+      font-weight: 500;
+      margin-top: 1.5rem;
+      text-align: center;
+      border: 1px solid #b3d9c2;
+    }
+
+    /* ===== ADMIN PANEL FORM ===== */
+    .admin-panel {
+      display: none; /* hidden until login */
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .full-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .status-selected { background: #d5f0da; color: #0b5e2e; }
+    .status-cancelled { background: #f8d7da; color: #a11f2f; }
+    .status-evaluation { background: #fff2d4; color: #b45b0a; }
+
+    /* ===== TABLE STYLES ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid #e2eaf2;
+      background: white;
+      margin-top: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #002868;
+      color: white;
+      font-weight: 600;
+      padding: 1rem 0.8rem;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      padding: 1rem 0.8rem;
+      border-bottom: 1px solid #dee9f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafd;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid #b0c6dd;
+      border-radius: 30px;
+      padding: 0.3rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #002868;
+      transition: all 0.1s;
+    }
+
+    .btn-icon:hover {
+      background: #e0ebf9;
+      border-color: #002868;
+    }
+
+    /* ===== SEARCH/FILTER BAR ===== */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-bar input, .filter-bar select {
+      padding: 0.7rem 1rem;
+      border: 2px solid #dbe2ec;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      background: white;
+      min-width: 220px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid #cedaea;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #3a5370;
+      background: #f0f5fb;
+      border-radius: 40px 40px 0 0;
+    }
+
+    .footer span {
+      font-weight: 600;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 680px) {
+      body { padding-top: 110px; }
+      .logo-bar { padding: 0.5rem 1rem; }
+      .logo { width: 40px; height: 40px; line-height: 40px; font-size: 1.5rem; }
+      .site-title { font-size: 1.2rem; }
+      .main-container { padding: 1rem; }
+      .card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- FIXED HEADER with logo + scrolling bar -->
+<header class="fixed-header">
+  <div class="logo-bar">
+    <div class="logo">🏛️</div>
+    <span class="site-title">Tender Result Portal</span>
+  </div>
+  <!-- side-scrolling notice bar (mandatory) -->
+  <div class="news-bar">
+    <div class="scrolling-wrapper">
+      <span class="news-text">📢 Tender Result for Work No. 12/2026 Published | New Results Updated | Check Latest Tender Awards | ⚡ Highways Dept tender results out | 📅 Bid opening 22 Apr 2026</span>
+      <span class="news-text">📢 Tender Result for Work No. 12/2026 Published | New Results Updated | Check Latest Tender Awards | ⚡ Highways Dept tender results out | 📅 Bid opening 22 Apr 2026</span>
+    </div>
+  </div>
+</header>
+
+<main class="main-container">
+
+  <!-- ========== ADMIN LOGIN CARD (frontend only) ========== -->
+  <section id="loginSection" class="login-box">
+    <h3>Admin Login</h3>
+    <div class="input-group">
+      <label>Username</label>
+      <input type="text" id="username" value="admin" placeholder="admin">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" value="admin123" placeholder="••••••••">
+    </div>
+    <button class="btn" id="loginBtn" style="width:100%;">Access Admin Panel</button>
+    <div id="loginError" class="error-msg" style="display: none;">Incorrect credentials (use admin/admin123)</div>
+  </section>
+
+  <!-- ========== ADMIN PANEL (hidden until login) ========== -->
+  <section id="adminPanel" class="card admin-panel">
+    <h2>📋 Add / Edit Tender (Admin)</h2>
+    <div class="form-grid" id="tenderForm">
+      <div class="input-group"><label>Tender Number *</label><input type="text" id="tenderNo" placeholder="e.g. 12/2026"></div>
+      <div class="input-group"><label>Work Name *</label><input type="text" id="workName" placeholder="Bridge repair"></div>
+      <div class="input-group"><label>Department *</label><input type="text" id="department" placeholder="PWD"></div>
+      <div class="input-group"><label>Estimated Cost (₹) *</label><input type="number" id="cost" step="1000" placeholder="2500000"></div>
+      <div class="input-group"><label>Bid Opening Date *</label><input type="date" id="bidDate"></div>
+      <div class="input-group"><label>Result Status *</label>
+        <select id="status">
+          <option value="Selected">Selected</option>
+          <option value="Cancelled">Cancelled</option>
+          <option value="Under Evaluation">Under Evaluation</option>
+        </select>
+      </div>
+      <div class="input-group"><label>Selected Bidder Name</label><input type="text" id="bidder" placeholder="ABC Construction"></div>
+      <div class="input-group"><label>Quoted Amount (₹)</label><input type="number" id="quoted" step="1000" placeholder="2480000"></div>
+    </div>
+    <div class="full-row" style="margin-top:1.5rem; gap:1rem; display:flex; flex-wrap:wrap;">
+      <button class="btn" id="saveTenderBtn">💾 Save Tender to List</button>
+      <button class="btn btn-secondary" id="clearFormBtn">🗑️ Clear / Reset</button>
+      <span id="saveSuccess" class="success-msg" style="display:none; margin:0;">✓ Tender added successfully</span>
+    </div>
+    <p style="font-size:0.85rem; color:#3f6280; margin-top:1rem;"><span class="status-badge status-selected">Selected</span> <span class="status-badge status-cancelled">Cancelled</span> <span class="status-badge status-evaluation">Under Evaluation</span> — coloured badges in table</p>
+  </section>
+
+  <!-- ========== TENDER LIST VIEW ========== -->
+  <section class="card" style="padding-top:1.5rem;">
+    <h2>📄 Tender Results</h2>
+    <!-- search & filter -->
+    <div class="filter-bar">
+      <input type="text" id="searchTenderNo" placeholder="🔍 Search by Tender No">
+      <select id="statusFilter">
+        <option value="All">All Status</option>
+        <option value="Selected">Selected</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Under Evaluation">Under Evaluation</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="tenderTable">
+        <thead>
+          <tr><th>Tender No</th><th>Work Name</th><th>Dept</th><th>Cost (₹)</th><th>Date</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- dynamic rows from JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <p>⚠️ Disclaimer: This is a demo portal for tender results. Data may not reflect official records.</p>
+    <p>📅 Last Updated: <span id="lastUpdated"></span></p>
+  </footer>
+</main>
+
+<script>
+  (function() {
+    // ==================== GLOBAL DATA & INIT ====================
+    let tenders = [];                // will hold array of tender objects
+    const LS_KEY_TENDERS = 'tenderList';
+    const LS_KEY_FORM_DRAFT = 'tenderFormDraft';
+
+    // Sample initial tenders (JSON base)
+    const defaultTenders = [
+      { tenderNo: '01/2026', workName: 'Bridge approach road', department: 'PWD', cost: 4500000, date: '2026-02-10', status: 'Selected', bidder: 'Highway Infra', amount: 4470000 },
+      { tenderNo: '12/2026', workName: 'Water supply pipeline', department: 'Jal Nigam', cost: 2800000, date: '2026-03-01', status: 'Under Evaluation', bidder: '', amount: 0 },
+      { tenderNo: '08/2026', workName: 'Government school roof', department: 'Education', cost: 1200000, date: '2026-01-18', status: 'Cancelled', bidder: 'N/A', amount: 0 },
+      { tenderNo: '21/2026', workName: 'Street lighting phase 3', department: 'Municipal', cost: 3750000, date: '2026-02-28', status: 'Selected', bidder: 'ElectroSolve', amount: 3695000 }
+    ];
+
+    // Load from localStorage or use defaults
+    function loadTenders() {
+      const stored = localStorage.getItem(LS_KEY_TENDERS);
+      if (stored) {
+        try { tenders = JSON.parse(stored); } catch { tenders = [...defaultTenders]; }
+      } else {
+        tenders = [...defaultTenders];
+      }
+    }
+    function saveTendersToStorage() {
+      localStorage.setItem(LS_KEY_TENDERS, JSON.stringify(tenders));
+    }
+
+    loadTenders();
+    saveTendersToStorage(); // ensure defaults written if not present
+
+    // ==================== RENDER TABLE (with filter & search) ====================
+    const tbody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchTenderNo');
+    const statusFilter = document.getElementById('statusFilter');
+
+    function renderTable() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const statusVal = statusFilter.value;
+
+      const filtered = tenders.filter(t => {
+        const matchSearch = t.tenderNo.toLowerCase().includes(searchTerm);
+        const matchStatus = (statusVal === 'All' || t.status === statusVal);
+        return matchSearch && matchStatus;
+      });
+
+      let html = '';
+      filtered.forEach(t => {
+        let statusClass = '';
+        if (t.status === 'Selected') statusClass = 'status-selected';
+        else if (t.status === 'Cancelled') statusClass = 'status-cancelled';
+        else statusClass = 'status-evaluation';
+
+        html += `<tr>
+          <td><strong>${t.tenderNo}</strong></td>
+          <td>${t.workName}</td>
+          <td>${t.department}</td>
+          <td>₹ ${Number(t.cost).toLocaleString()}</td>
+          <td>${t.date}</td>
+          <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+          <td class="action-btns">
+            <button class="btn-icon view-pdf" data-tenderno="${t.tenderNo}">📄 View</button>
+            <button class="btn-icon download-pdf" data-tenderno="${t.tenderNo}">⬇️ PDF</button>
+          </td>
+        </tr>`;
+      });
+      tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding:2rem;">No tenders match</td></tr>';
+    }
+
+    // ==================== ADD NEW TENDER ====================
+    function getFormTender() {
+      return {
+        tenderNo: document.getElementById('tenderNo').value.trim(),
+        workName: document.getElementById('workName').value.trim(),
+        department: document.getElementById('department').value.trim(),
+        cost: parseFloat(document.getElementById('cost').value) || 0,
+        date: document.getElementById('bidDate').value,
+        status: document.getElementById('status').value,
+        bidder: document.getElementById('bidder').value.trim() || '—',
+        amount: parseFloat(document.getElementById('quoted').value) || 0
+      };
+    }
+
+    function setFormFromTender(t) { /* optional: for edit later, but we keep draft load only. we use for draft */ }
+
+    // Save form draft to localStorage on any input
+    const formInputs = ['tenderNo','workName','department','cost','bidDate','status','bidder','quoted'];
+    formInputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', function() {
+        const draft = getFormTender();
+        localStorage.setItem(LS_KEY_FORM_DRAFT, JSON.stringify(draft));
+      });
+    });
+
+    // Load draft on page load
+    function loadDraft() {
+      const draft = localStorage.getItem(LS_KEY_FORM_DRAFT);
+      if (draft) {
+        try {
+          const d = JSON.parse(draft);
+          document.getElementById('tenderNo').value = d.tenderNo || '';
+          document.getElementById('workName').value = d.workName || '';
+          document.getElementById('department').value = d.department || '';
+          document.getElementById('cost').value = d.cost || '';
+          document.getElementById('bidDate').value = d.date || '';
+          document.getElementById('status').value = d.status || 'Selected';
+          document.getElementById('bidder').value = d.bidder || '';
+          document.getElementById('quoted').value = d.amount || '';
+        } catch (e) {}
+      } else {
+        // optional set default today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('bidDate').value = today;
+      }
+    }
+
+    // Clear form + remove draft
+    document.getElementById('clearFormBtn').addEventListener('click', function() {
+      document.getElementById('tenderNo').value = '';
+      document.getElementById('workName').value = '';
+      document.getElementById('department').value = '';
+      document.getElementById('cost').value = '';
+      document.getElementById('bidDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('status').value = 'Selected';
+      document.getElementById('bidder').value = '';
+      document.getElementById('quoted').value = '';
+      localStorage.removeItem(LS_KEY_FORM_DRAFT);
+      document.getElementById('saveSuccess').style.display = 'none';
+    });
+
+    // Save new tender (add to array, store, rerender)
+    document.getElementById('saveTenderBtn').addEventListener('click', function() {
+      const newTender = getFormTender();
+      if (!newTender.tenderNo || !newTender.workName || !newTender.department || !newTender.cost || !newTender.date) {
+        alert('Please fill all required fields (Tender No, Work, Dept, Cost, Date)');
+        return;
+      }
+      tenders.push(newTender);
+      saveTendersToStorage();
+      // clear draft so form is clean (optional)
+      localStorage.removeItem(LS_KEY_FORM_DRAFT);
+      // reset form (clear)
+      document.getElementById('clearFormBtn').click(); // reuse clear
+      renderTable();
+      document.getElementById('saveSuccess').style.display = 'inline-block';
+      setTimeout(() => document.getElementById('saveSuccess').style.display = 'none', 2500);
+    });
+
+    // ==================== PDF / VIEW (printable layout) ====================
+    function openTenderWindow(tender, autoPrint = false) {
+      if (!tender) return;
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html><head><title>Tender ${tender.tenderNo}</title>
+        <style>
+          body { font-family: 'Inter', Arial; padding: 2rem; color: #1e2a41; }
+          .header { border-bottom: 3px solid #002868; padding-bottom: 0.5rem; margin-bottom: 2rem; }
+          h2 { color: #002868; }
+          .details { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; background: #f4f9ff; padding: 2rem; border-radius: 24px; }
+          .label { font-weight: 600; color: #0b2b4f; }
+          .value { font-size: 1.2rem; margin-bottom: 1rem; }
+          .badge { display: inline-block; padding: 0.3rem 1.2rem; border-radius: 30px; font-weight: 700; }
+          .footer { margin-top: 3rem; font-size: 0.9rem; color: #4f657f; text-align: center; }
+        </style>
+        </head><body>
+        <div class="header"><h1>Tender Result · Official</h1></div>
+        <h2>${tender.workName} (${tender.tenderNo})</h2>
+        <div class="details">
+          <div><span class="label">Department</span><div class="value">${tender.department}</div></div>
+          <div><span class="label">Estimated Cost</span><div class="value">₹ ${Number(tender.cost).toLocaleString()}</div></div>
+          <div><span class="label">Bid Opening Date</span><div class="value">${tender.date}</div></div>
+          <div><span class="label">Status</span><div class="value"><span class="badge" style="background: ${tender.status==='Selected'?'#d5f0da':tender.status==='Cancelled'?'#f8d7da':'#fff2d4'}; color: #000;">${tender.status}</span></div></div>
+          <div><span class="label">Selected Bidder</span><div class="value">${tender.bidder || '—'}</div></div>
+          <div><span class="label">Quoted Amount</span><div class="value">₹ ${Number(tender.amount).toLocaleString()}</div></div>
+        </div>
+        <div class="footer">Tender Result Portal · Generated on ${new Date().toLocaleDateString()}</div>
+        <script>${autoPrint ? 'window.onload = function() { window.print(); }' : ''}<\/script>
+      </body></html>`);
+      win.document.close();
+    }
+
+    // Event delegation for View/PDF buttons
+    document.addEventListener('click', function(e) {
+      const tenderNo = e.target.getAttribute('data-tenderno');
+      if (!tenderNo) return;
+      const tender = tenders.find(t => t.tenderNo === tenderNo);
+      if (!tender) return;
+
+      if (e.target.classList.contains('view-pdf')) {
+        openTenderWindow(tender, false);
+      } else if (e.target.classList.contains('download-pdf')) {
+        openTenderWindow(tender, true); // auto print -> save as PDF
+      }
+    });
+
+    // ==================== LOGIC: ADMIN LOGIN ====================
+    const loginSection = document.getElementById('loginSection');
+    const adminPanel = document.getElementById('adminPanel');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+
+    loginBtn.addEventListener('click', function() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (user === 'admin' && pass === 'admin123') {
+        loginSection.style.display = 'none';
+        adminPanel.style.display = 'block';
+        loginError.style.display = 'none';
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    // ==================== FILTER & SEARCH ====================
+    searchInput.addEventListener('input', renderTable);
+    statusFilter.addEventListener('change', renderTable);
+
+    // ==================== INIT ====================
+    loadDraft();
+    renderTable();
+    // set last updated date
+    document.getElementById('lastUpdated').innerText = new Date().toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric' });
+
+    // optional: logout (simple refresh, but we add a small logout in admin panel)
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'btn btn-secondary';
+    logoutBtn.textContent = '← Logout';
+    logoutBtn.style.marginLeft = 'auto';
+    logoutBtn.onclick = () => { location.reload(); };
+    document.querySelector('#adminPanel .full-row')?.appendChild(logoutBtn);
+  })();
+</script>
+</body>
+</html>
